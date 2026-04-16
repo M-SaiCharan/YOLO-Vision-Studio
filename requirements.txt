@@ -13,3 +13,5 @@ yt-dlp==2026.2.4
 
 # ── Tracking (pulled by ultralytics, pinned for clarity)
 lapx>=0.5.0
+
+streamlit-webrtc
