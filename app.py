@@ -6,6 +6,7 @@ powered by YOLO26, YOLO World v2 and Streamlit.
 """
 
 import streamlit as st
+import comparison_service
 import config
 import image_service
 import video_service
@@ -27,36 +28,41 @@ with st.sidebar:
     # 1️⃣  Inference mode ─────────────────────────────────────────────────────
     mode = st.radio("Inference Mode", config.MODES_LIST, key="mode")
 
-    # 2️⃣  Task selection ─────────────────────────────────────────────────────
-    task = st.radio("Task", config.TASKS_LIST, key="task")
+    if mode != config.MODE_COMPARE:
+        # 2️⃣  Task selection ─────────────────────────────────────────────────────
+        task = st.radio("Task", config.TASKS_LIST, key="task")
 
-    st.markdown("---")
+        st.markdown("---")
 
-    # 3️⃣  Model selector ─────────────────────────────────────────────────────
-    catalog = config.get_model_catalog(task)
-    model_label = st.selectbox(
-        "🧠 Model",
-        options=list(catalog.keys()),
-        index=0,
-        help="YOLO26 = fast CNN · RT-DETR = transformer (better on small objects) · World = open-vocab.",
-        key="model_select",
-    )
-    selected_model = catalog[model_label]
-
-    st.markdown("---")
-
-    # 4️⃣  Confidence slider ──────────────────────────────────────────────────
-    confidence = (
-        st.slider(
-            "Model Confidence (%)",
-            min_value=config.MIN_CONFIDENCE,
-            max_value=config.MAX_CONFIDENCE,
-            value=int(config.DEFAULT_CONFIDENCE * 100),
+        # 3️⃣  Model selector ─────────────────────────────────────────────────────
+        catalog = config.get_model_catalog(task)
+        model_label = st.selectbox(
+            "🧠 Model",
+            options=list(catalog.keys()),
+            index=0,
+            help="YOLO26 = fast CNN · RT-DETR = transformer (better on small objects) · World = open-vocab.",
+            key="model_select",
         )
-        / 100.0
-    )
+        selected_model = catalog[model_label]
+
+        st.markdown("---")
+
+        # 4️⃣  Confidence slider ──────────────────────────────────────────────────
+        confidence = (
+            st.slider(
+                "Model Confidence (%)",
+                min_value=config.MIN_CONFIDENCE,
+                max_value=config.MAX_CONFIDENCE,
+                value=int(config.DEFAULT_CONFIDENCE * 100),
+            )
+            / 100.0
+        )
 
 # ── Main content ──────────────────────────────────────────────────────────────
+if mode == config.MODE_COMPARE:
+    comparison_service.render()
+    st.stop()
+
 st.title(config.APP_TITLE)
 st.markdown(f"*{config.APP_DESCRIPTION}*")
 

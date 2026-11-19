@@ -6,7 +6,7 @@ opencv-python>=4.13.0.92
 # ── Data & Visualization ─────────────────────────────
 numpy>=1.26.0
 pandas>=2.1.0
-Pillow>=10.0.0
+Pillow>=10.1.0
 
 # ── Video Sources ─────────────────────────────────────
 yt-dlp==2026.2.4

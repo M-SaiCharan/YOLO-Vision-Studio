@@ -5,7 +5,7 @@ Models are loaded once and reused across reruns.
 
 import torch
 import streamlit as st
-from ultralytics import YOLO, YOLOWorld, YOLOE
+from ultralytics import RTDETR, YOLO, YOLOWorld, YOLOE
 
 import config
 
@@ -18,7 +18,7 @@ def load_model(model_name: str) -> YOLO:
     ultralytics auto-download, then sweeps stray weights into ``weights/``.
     """
     path = config.resolve_model_path(model_name)
-    model = YOLO(path)
+    model = RTDETR(path) if model_name.startswith("rtdetr-") else YOLO(path)
     config.sweep_stray_weights()
     return model
 
@@ -178,6 +178,6 @@ def load_fresh_model(
             _set_yoloe_classes(m, world_classes)
         return m
 
-    m = YOLO(path)
+    m = RTDETR(path) if name.startswith("rtdetr-") else YOLO(path)
     config.sweep_stray_weights()
     return m

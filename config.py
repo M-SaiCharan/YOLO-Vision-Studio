@@ -33,7 +33,8 @@ APP_DESCRIPTION = (
 # ─── Inference Modes ─────────────────────────────────────────────────────────
 MODE_IMAGE = "📷 Image Inference"
 MODE_VIDEO = "🎬 Video Inference"
-MODES_LIST = [MODE_IMAGE, MODE_VIDEO]
+MODE_COMPARE = "Compare Models"
+MODES_LIST = [MODE_IMAGE, MODE_VIDEO, MODE_COMPARE]
 
 # ─── Tasks ───────────────────────────────────────────────────────────────────
 TASK_DETECT = "Detection"

@@ -2,9 +2,17 @@
 
 YOLO Vision Studio is a Streamlit app for exploring what a vision model sees in a photo and how its predictions change across a video. You can inspect a single detection, compare a box with a segmentation mask, or follow an object by its tracking ID across frames.
 
-I started with the detection and tracking app from CodingMantras / Aparsoft. My changes in this version focus on the runtime setup. I updated the Linux graphics packages used for deployment and added explicit Python dependencies for browser webcam input and CLIP text prompts. [Original project](https://github.com/CodingMantras/yolov8-streamlit-detection-tracking)
+I started with the detection and tracking app from CodingMantras / Aparsoft. I added **Compare Models** to answer a question I couldn't answer from a single annotated image: when I switch detectors, which objects actually change? The comparison workflow pairs boxes across models, isolates disagreements, and exports the evidence for every image in a batch. I also updated the Linux graphics packages and the webcam and CLIP dependencies. [Original project](https://github.com/CodingMantras/yolov8-streamlit-detection-tracking)
 
-![Example detections on the included office photo](images/office_4_detected.jpg)
+## Two detectors, one office photo
+
+At 40% confidence and a match IoU of 0.50, YOLO26 Nano returned **9 boxes** and RT-DETR-Large returned **25**. All 9 Nano boxes had a same-class match, including 5 people. Among RT-DETR's 16 additional boxes were 7 books, 3 chairs and 3 cups. The panels below show only unmatched predictions, which is why the Nano panel is clear. The photo has no ground-truth labels for scoring accuracy. [Full detection and timing report](examples/office-report.json)
+
+![Office photo shown twice, with the sixteen RT-DETR-only detections highlighted on the right](examples/office-comparison.jpg)
+
+Choose **Compare Models** in the sidebar. Pick two detectors, keep the office photo or upload a batch, and click **Run comparison**. Sort the batch table by **Only B** to find images worth inspecting. Select an image and switch between **All**, **Matched**, **Only A**, and **Only B** without rerunning inference.
+
+Boxes match when their class names agree and their intersection-over-union reaches the selected threshold. The matcher takes the highest overlap first and uses each box once. The JSON export records the input hashes, checkpoints, settings, package versions, device, per-image inference times, raw boxes, pair indices, and per-class counts. Each detector gets one warm-up prediction. Timings cover the model's inference stage and vary with hardware and load.
 
 ## Run locally
 
@@ -18,6 +26,8 @@ python -m streamlit run app.py
 ```
 
 Open the local URL printed by Streamlit. The first time you select a model, the app looks for its checkpoint in `weights/` and downloads missing weights through Ultralytics. Allow internet access for that first download.
+
+To regenerate the office figure and JSON report, run `python -m examples.office_comparison` from the repository root. To run the comparison regression tests, use `python -m unittest discover -s tests -v`.
 
 ## Try it with the included media
 
